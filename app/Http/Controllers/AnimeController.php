@@ -3,12 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Models\Anime;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use App\Models\Anime;
 
 class AnimeController extends Controller
 {
     //
 
+
+    public function index(){
+        $animes = Anime::all();
+        return $animes;
+    }
 
     public function store(Request $request){
 
@@ -39,7 +46,7 @@ class AnimeController extends Controller
 
     public function show($id){
 
-        $id = Anime::find();
+        $id = Anime::find($id);
 
         if(is_null($id)){
             return $this->sendErrot('Anime não encontrado.');
@@ -52,29 +59,30 @@ class AnimeController extends Controller
             ]);
     }
 
-    public function update(Request $request, Anime $anime){
+    public function update(Request $request, $id){
 
         $input = $request->all();
 
-        $input->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
-            'link' => ['required'],
+        $validator = Validator::make($input, [
+            'title' => 'required',
+            'description' => 'required',
+            'link' => 'required',
         ]);
 
         if($validator->fails()){
-            return $this->sendError('Erro de validação.', $validator->errors());       
+        return $this->sendError('Validation Error.', $validator->errors());       
         }
 
+        $anime = Anime::findOrFail($id);
         $anime->title = $input['title'];
         $anime->description = $input['description'];
-        $anime->description = $input['link'];
+        $anime->link = $input['link'];
         $anime->save();
 
         return response()->json([
-            "success" => true,
-            "message" => "Anime atualizado com sucesso.",
-            "data" => $anime
+        "success" => true,
+        "message" => "Product updated successfully.",
+        "data" => $anime
         ]);
 
     }

@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.header {
+    background-color: rgba(202, 202, 202, 0.767);
+
+}
+.animes {
+    background-color: rgba(202, 202, 202, 0.767);
+    padding: 50px;
+    height: 700px;
+}
